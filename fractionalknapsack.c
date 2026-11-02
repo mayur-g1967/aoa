@@ -1,0 +1,58 @@
+#include <stdio.h>
+
+int main()
+{
+    int n, i, j, k, id[20];
+    float p[20], w[20], r[20], M, P = 0, t;
+
+    printf("Enter number of items (max 20): ");
+    scanf("%d", &n);
+    if (n < 1 || n > 20)
+    {
+        printf("Invalid number of items\n");
+        return 0;
+    }
+    printf("Enter profit and weight of each item: ");
+    for (i = 0; i < n; i++)
+    {
+        scanf("%f %f", &p[i], &w[i]);
+        if (w[i] <= 0)
+        {
+            printf("Invalid input: weight must be positive\n");
+            return 0;
+        }
+        r[i] = p[i] / w[i];
+        id[i] = i + 1;
+    }
+    printf("Enter knapsack capacity M: ");
+    scanf("%f", &M);
+
+    for (i = 0; i < n - 1; i++)
+        for (j = 0; j < n - 1 - i; j++)
+            if (r[j] < r[j + 1])
+            {
+                t = r[j]; r[j] = r[j + 1]; r[j + 1] = t;
+                t = p[j]; p[j] = p[j + 1]; p[j + 1] = t;
+                t = w[j]; w[j] = w[j + 1]; w[j + 1] = t;
+                k = id[j]; id[j] = id[j + 1]; id[j + 1] = k;
+            }
+
+    printf("\nObjects in decreasing order of Pi/Wi:\n\n");
+    printf("Object\tPi\tWi\tPi/Wi\n");
+    for (i = 0; i < n; i++)
+        printf("%d\t%.2f\t%.2f\t%.2f\n", id[i], p[i], w[i], r[i]);
+
+    for (i = 0; i < n; i++)
+        if (M > 0 && w[i] <= M)
+        {
+            M = M - w[i];
+            P = P + p[i];
+        }
+        else
+            break;
+    if (M > 0 && i < n)
+        P = P + p[i] * (M / w[i]);
+
+    printf("\nMaximum profit = %.2f\n", P);
+    return 0;
+}
