@@ -1,0 +1,87 @@
+#include <stdio.h>
+
+#define MAX 20
+
+int x[MAX], n, count = 0;
+
+int place(int row, int col)
+{
+    int i;
+    for (i = 0; i < row; i++)
+    {
+        if (x[i] == col || x[i] - col == i - row || x[i] - col == row - i)
+            return 0;
+    }
+    return 1;
+}
+
+void printBoard()
+{
+    int i, j;
+    count++;
+    printf("\nSolution %d:\n", count);
+    for (i = 0; i < n; i++)
+    {
+        for (j = 0; j < n; j++)
+        {
+            if (x[i] == j)
+                printf("Q ");
+            else
+                printf(". ");
+        }
+        printf("\n");
+    }
+}
+
+void nQueen(int row)
+{
+    int col;
+    for (col = 0; col < n; col++)
+    {
+        if (place(row, col))
+        {
+            x[row] = col;
+            if (row == n - 1)
+                printBoard();
+            else
+                nQueen(row + 1);
+        }
+    }
+}
+
+int main()
+{
+    printf("Enter number of queens (1 to 19): ");
+    scanf("%d", &n);
+
+    if (n < 1 || n >= MAX)
+    {
+        printf("Invalid input\n");
+        return 0;
+    }
+
+    nQueen(0);
+
+    if (count == 0)
+        printf("\nNo solution exists\n");
+    else
+        printf("\nTotal solutions = %d\n", count);
+
+    return 0;
+}
+
+/*
+Algorithm Place(x, k, i)
+Step 1: for j = 1 to k - 1
+Step 2:     if x[j] == i OR |x[j] - i| == |j - k| then
+Step 3:         return false
+Step 4: return true
+
+Algorithm NQueen(x, k, n)
+Step 1: for i = 1 to n
+Step 2:     if Place(x, k, i) then
+Step 3:         x[k] = i
+Step 4:         if k == n then print the solution x[1..n]
+Step 5:         else NQueen(x, k + 1, n)
+Step 6: End
+*/
