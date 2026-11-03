@@ -1,0 +1,47 @@
+#include <stdio.h>
+#include <string.h>
+
+int main()
+{
+    char text[100], pattern[100];
+    int n, m, i, j, found = 0;
+
+    printf("Enter the text: ");
+    scanf("%99s", text);
+    printf("Enter the pattern: ");
+    scanf("%99s", pattern);
+
+    n = strlen(text);
+    m = strlen(pattern);
+
+    for (i = 0; i <= n - m; i++)
+    {
+        j = 0;
+        while (j < m && text[i + j] == pattern[j])
+            j = j + 1;
+        if (j == m)
+        {
+            printf("Pattern found at position %d\n", i);
+            found = 1;
+        }
+    }
+
+    if (!found)
+        printf("Pattern not found\n");
+    return 0;
+}
+
+/*
+NaiveStringMatch(text, pattern)
+    // n = length of text
+    // m = length of pattern
+
+    for i = 0 to n - m
+        j = 0
+
+        while j < m and text[i + j] == pattern[j]
+            j = j + 1
+
+        if j == m    // Indicates a full match of the pattern
+            print "Pattern found at position", i
+*/
