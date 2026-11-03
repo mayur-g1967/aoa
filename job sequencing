@@ -1,0 +1,78 @@
+#include <stdio.h>
+
+int main()
+{
+    int n, i, j, k, t, maxd = 0, total = 0, count = 0;
+    int id[50], d[50], p[50], slot[51];
+
+    printf("Enter number of jobs: ");
+    scanf("%d", &n);
+    printf("Enter deadlines: ");
+    for (i = 0; i < n; i++)
+    {
+        scanf("%d", &d[i]);
+        id[i] = i + 1;
+        if (d[i] > n)
+            d[i] = n;
+        if (d[i] > maxd)
+            maxd = d[i];
+    }
+    printf("Enter profits: ");
+    for (i = 0; i < n; i++)
+        scanf("%d", &p[i]);
+
+    for (i = 0; i < n - 1; i++)
+        for (j = 0; j < n - 1 - i; j++)
+            if (p[j] < p[j + 1])
+            {
+                t = p[j]; p[j] = p[j + 1]; p[j + 1] = t;
+                t = d[j]; d[j] = d[j + 1]; d[j + 1] = t;
+                t = id[j]; id[j] = id[j + 1]; id[j + 1] = t;
+            }
+
+    for (i = 1; i <= maxd; i++)
+        slot[i] = 0;
+
+    for (i = 0; i < n; i++)
+        for (k = d[i]; k >= 1; k--)
+            if (slot[k] == 0)
+            {
+                slot[k] = id[i];
+                total += p[i];
+                count++;
+                break;
+            }
+
+    printf("\nTime slot:\t");
+    for (i = 1; i <= maxd; i++)
+        printf("%d-%d\t", i - 1, i);
+    printf("\nJob:\t\t");
+    for (i = 1; i <= maxd; i++)
+    {
+        if (slot[i] == 0)
+            printf("-\t");
+        else
+            printf("J%d\t", slot[i]);
+    }
+    printf("\n\nJobs completed: %d out of %d", count, n);
+    printf("\nMaximum profit = %d\n", total);
+    return 0;
+}
+
+/*
+Algorithm JobSequencing(n, id[], d[], p[])
+Step 1: maxd = maximum of all deadlines d[i]
+Step 2: Sort jobs in decreasing order of profit
+        (swap p[i], d[i] and id[i] together)
+Step 3: for i = 1 to maxd
+            slot[i] = 0
+Step 4: total = 0, count = 0
+Step 5: for i = 1 to n
+            for k = d[i] down to 1
+                if slot[k] == 0
+                    slot[k] = id[i]
+                    total = total + p[i]
+                    count = count + 1
+                    break
+Step 6: Print slot[1..maxd], count and total
+*/
