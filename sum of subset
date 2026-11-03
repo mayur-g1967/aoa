@@ -1,0 +1,103 @@
+#include <stdio.h>
+
+int w[22], x[22], n, W, count;
+
+int feasible(int i, int sum, int rem)
+{
+    return sum + rem >= W && (sum == W || sum + w[i + 1] <= W);
+}
+
+void subsetProblem(int i, int sum, int rem)
+{
+    int j;
+
+    if (!feasible(i, sum, rem))
+        return;
+    if (sum == W)
+    {
+        count++;
+        printf("Solution %d: X = [", count);
+        for (j = 1; j <= n; j++)
+            printf("%d ", j <= i ? x[j] : 0);
+        printf("]  Subset = {");
+        for (j = 1; j <= i; j++)
+            if (x[j])
+                printf(" %d", w[j]);
+        printf(" }\n");
+        return;
+    }
+    x[i + 1] = 1;
+    subsetProblem(i + 1, sum + w[i + 1], rem - w[i + 1]);
+    x[i + 1] = 0;
+    subsetProblem(i + 1, sum, rem - w[i + 1]);
+}
+
+int main()
+{
+    int i, j, t, total = 0, neg = 0;
+
+    printf("Enter number of items (max 20): ");
+    scanf("%d", &n);
+    if (n < 1 || n > 20)
+    {
+        printf("Invalid number of items\n");
+        return 0;
+    }
+    printf("Enter %d non-negative weights: ", n);
+    for (i = 1; i <= n; i++)
+    {
+        scanf("%d", &w[i]);
+        total += w[i];
+        if (w[i] < 0)
+            neg = 1;
+    }
+    if (neg)
+    {
+        printf("Invalid input: negative values are not allowed\n");
+        return 0;
+    }
+    printf("Enter target sum W: ");
+    scanf("%d", &W);
+
+    for (i = 1; i < n; i++)
+        for (j = 1; j <= n - i; j++)
+            if (w[j] > w[j + 1])
+            {
+                t = w[j];
+                w[j] = w[j + 1];
+                w[j + 1] = t;
+            }
+
+    printf("Sorted weights:");
+    for (i = 1; i <= n; i++)
+        printf(" %d", w[i]);
+    printf("\n");
+
+    subsetProblem(0, 0, total);
+    if (!count)
+        printf("No solution exists\n");
+    return 0;
+}
+
+/*
+ Description: Solve sum of subset problem using backtracking
+ Input: W: Number for which subset is to be computed
+        i: Item index
+        sum: Sum of integers selected so far
+        remSum: Size of remaining problem i.e. (W - sum)
+Output: Solution tuple X
+
+if FEASIBLE_SUB_SET(i) == 1 then
+   if (sum == W) then
+       print X[1..i]
+   else
+       X[i+1] ← 1
+       SUB_SET_PROBLEM(i+1, sum + w[i+1], 1, W, remSum - w[i+1])
+          // Include i-th item to solution set and proceed
+       X[i+1] ← 0
+       SUB_SET_PROBLEM(i+1, sum, W, remSum - w[i+1])
+          // Exclude i-th item to solution set and proceed
+   end
+End
+
+*/
